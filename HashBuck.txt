@@ -1,0 +1,75 @@
+class HashBuck{
+    static class Node{
+        public int data;
+        public int value;
+        public Node next;
+
+        public Node(int data,int value){
+            this.data=data;
+            this.value=value;
+        }
+    }
+    public Node[] array;
+    public int useSize;
+
+    public HashBuck(){
+        this.array = new Node[10];
+        this.useSize = 0;
+    }
+    public void put(int key,int value){
+        int index = key % this.array.length;
+        for (Node cur = array[index];cur!=null;cur=cur.next){
+            if (cur.data==key){
+                cur.value = value;
+                return;
+            }
+        }
+        Node node = new Node(key,value);
+        node.next = array[index];
+        array[index] = node;
+        this.useSize++;
+
+        if (loadFactor()>0.75){
+            resize();
+        }
+    }
+    public float loadFactor(){
+        return this.useSize*1.0f/this.array.length;
+    }
+    public void resize(){
+       Node[] newArray = new Node[2*this.array.length];
+        for (int i = 0; i < this.array.length ; i++) {
+            Node curNext = null;
+            for (Node cur = array[i];cur!=null;cur=curNext){
+                curNext = cur.next;
+                int index = cur.data % newArray.length;
+                cur.next = newArray[index];
+                newArray[index]=cur;
+            }
+        }
+    }
+    public int getValue(int key){
+        int index = key % this.array.length;
+        for (Node cur = array[index];cur!=null;cur = cur.next){
+            if (key == cur.data){
+                return cur.value;
+            }
+        }
+        return -1;
+    }
+}
+
+public class TestDemo {
+    public static void main(String[] args) {
+        HashBuck hashBuck = new HashBuck();
+        hashBuck.put(1,1);
+        hashBuck.put(2,2);
+        hashBuck.put(3,3);
+        hashBuck.put(4,4);
+        hashBuck.put(5,5);
+        hashBuck.put(6,6);
+        hashBuck.put(7,7);
+        //hashBuck.put(80,80);
+        System.out.println("=====");
+    }
+}
